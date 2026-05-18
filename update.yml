@@ -1,0 +1,12 @@
+- name: Pierwsza automatyzacja - aktualizacja systemu
+  hosts: app_servers
+  become: yes
+
+  tasks:
+    - name: Krok 1 - Odświeżenie listy dostępnych pakietów
+      apt:
+        update_cache: yes
+
+    - name: Krok 2 - Instalacja najnowszych wersji oprogramowania
+      apt:
+        upgrade: yes

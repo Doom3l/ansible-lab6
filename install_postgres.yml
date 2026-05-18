@@ -1,0 +1,41 @@
+- name: Instalacja i konfiguracja PostgreSQL
+  hosts: db_servers
+  become: yes
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+
+    - name: Krok 0 - Instalacja ACL
+      apt:
+        name: acl
+        state: present
+        update_cache: yes
+
+    - name: Krok 1 - Instalacja PostgreSQL
+      apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+          - python3-psycopg2
+        state: present
+
+    - name: Krok 2 - Uruchomienie PostgreSQL
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Krok 3 - Utworzenie użytkownika bazy
+      community.postgresql.postgresql_user:
+        name: "{{ vault_db_user }}"
+        password: "{{ vault_db_password }}"
+        role_attr_flags: CREATEDB,LOGIN
+      become_user: postgres
+
+    - name: Krok 4 - Utworzenie bazy danych
+      community.postgresql.postgresql_db:
+        name: "{{ vault_db_name }}"
+        owner: "{{ vault_db_user }}"
+      become_user: postgres
