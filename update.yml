@@ -1,5 +1,5 @@
 - name: Pierwsza automatyzacja - aktualizacja systemu
-  hosts: app_servers
+  hosts: all
   become: yes
 
   tasks:
